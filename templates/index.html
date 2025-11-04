@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-white p-6 rounded-2xl shadow">
+    <h2 class="text-lg font-semibold mb-4">ارفع ملف CSV</h2>
+    <form id="upload-form" class="space-y-4" action="{{ url_for('run_pipeline') }}" method="POST"
+        enctype="multipart/form-data">
+        <input type="file" name="csv_file" accept=".csv" required class="block w-full text-sm text-slate-600" />
+        <button class="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm hover:bg-blue-700">تشغيل الخوارزمية</button>
+    </form>
+
+    <div id="busy" class="hidden mt-6 flex items-center gap-3 text-sm text-slate-600">
+        <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" opacity="0.25" />
+            <path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="4" fill="none" />
+        </svg>
+        <span>جاري المعالجة (قد يستغرق بعض الوقت حسب حجم البيانات)...</span>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="mt-4 text-red-600 text-sm">
+        {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}
