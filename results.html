@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="space-y-6">
+    <!-- Step 1: File & target info -->
+    <section class="bg-white p-6 rounded-2xl shadow">
+        <h2 class="text-lg font-semibold mb-3">١) معلومات الملف والهدف</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div><span class="font-medium">الملف:</span> {{ file_name }}</div>
+            <div><span class="font-medium">أبعاد البيانات:</span> {{ shape[0] }} صف × {{ shape[1] }} عمود</div>
+            <div><span class="font-medium">عمود الهدف:</span> <code
+                    class="bg-slate-100 px-2 py-0.5 rounded">{{ target_col }}</code></div>
+            <div><span class="font-medium">نسبة الإيجابي (train):</span> {{ pos_ratio }}</div>
+            <div><span class="font-medium">Train:</span> {{ train_shape[0] }} × {{ train_shape[1] }}</div>
+            <div><span class="font-medium">Test:</span> {{ test_shape[0] }} × {{ test_shape[1] }}</div>
+        </div>
+    </section>
+
+    <!-- Step 2: Traditional selectors table -->
+    <section class="bg-white p-6 rounded-2xl shadow">
+        <h2 class="text-lg font-semibold mb-3">٢) Traditional Selectors (smart k)</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead>
+                    <tr class="bg-slate-100 text-left">
+                        {% for col in report_cols %}
+                        <th class="px-3 py-2 font-medium">{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in report_table %}
+                    <tr class="border-b last:border-0">
+                        {% for col in report_cols %}
+                        <td class="px-3 py-2">{{ row[col] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Step 3: GA v2 -->
+    <section class="bg-white p-6 rounded-2xl shadow">
+        <h2 class="text-lg font-semibold mb-3">٣) GA v2 — اختيار الأعمدة</h2>
+        <p class="text-sm text-slate-600 mb-3">الخصائص المختارة: {{ ga_selected_n }} (أول 25):
+            <span class="block mt-2 text-slate-800">{{ ga_selected_sample|join(', ') }}</span>
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h3 class="font-medium text-sm mb-2">النتائج على مجموعة الاختبار</h3>
+                <ul class="text-sm list-disc pl-6">
+                    <li>Accuracy: {{ ga_metrics.accuracy }}</li>
+                    <li>ROC-AUC: {{ ga_metrics.roc_auc }}</li>
+                    <li>PR-AUC: {{ ga_metrics.pr_auc }}</li>
+                    <li>الزمن (دقيقة): {{ ga_metrics.time_min }}</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="font-medium text-sm mb-2">منحنى أفضل لياقة عبر الأجيال</h3>
+                <img src="{{ ga_plot_url }}" alt="GA history" class="rounded-xl border" />
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
